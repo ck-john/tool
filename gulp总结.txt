@@ -1,0 +1,44 @@
+1.在桌面全局安装gulp：npm install -g gulp
+
+2.到项目的文件夹里面本地安装gulp：npm install gulp
+
+3.项目文件中需要有gulpfile.js文件，因此在根目录里创建：touch gulpfile.js
+
+4.用webstrom打开项目文件，打开gulpfile.js文件，配置文件
+	4.1.引入模块：var gulp = require('gulp');
+
+	4.2.声明路径常量：var appPath = {
+    // 提前声明好一些常量
+    src:'src/',
+    build:'build/',
+    dist:'dist/'
+
+	4.3：任务清单把所有的src下面的html分别构建到build中和dist中
+gulp.task('move',function () {
+    // 1.告诉gulp要操作那些文件
+    gulp.src(appPath.src + '**/*.html')
+        .pipe(gulp.dest(appPath.build))
+        .pipe(gulp.dest(appPath.dist));
+});
+
+	4.4 在git中运行：gulp+任务名称；实现运行任务，生成build、dist文件夹
+
+5.可在webstrom左下角的terminal中运行：gulp+任务名称；实现这些操作
+
+6.可在terminal中运行下载需要的模块：
+	如：npm install gulp-less
+	npm install gulp-less 下载less编译插件
+	npm install gulp-cssmin 下载css压缩插件
+	npm install gulp-concat 下载js合并插件
+	npm install gulp-uglify js压缩插件
+
+补充：suffix：".min"意思是后缀为.min。rename（‘’）这是重命名
+
+生成package.json：npm init -f
+package.json里面有需要的依赖插件，因此需先创建好node_modules文件，配置好gulpfile.js文件，才能到这步
+ 
+上传文件到github不用上传node_modules文件夹下的所有文件,但是package.json这个文件必须要,如果别人想要插件只需要执行npm install即可,就会下载所有的相关的插件
+
+在webstrom中的terminal中输入gulp，运行默认
+
+	

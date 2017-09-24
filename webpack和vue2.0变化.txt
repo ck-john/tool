@@ -1,0 +1,202 @@
+webpack：模块加载器，打包文件
+
+webpack里面的简单目录结构：
+1、index.html
+2、main.js  入口文件
+3、app.vue  vue文件
+4、package.json 工程文件（项目依赖）--》npm init --yes 生成
+5、webpack.config.js   webpack配置文件
+
+vue-cli帮你提供好基本项目结构
+一般用webpack-simple模板
+
+vue-cli脚手架基本用法：
+1.npm install vue-cli -g     安装vue命令环境
+	如何验证是否已经安装？ 只有在项目的根目录 输入 vue--version
+
+2.生成项目模板
+	vue init<模板名>本地文件夹名称
+3.进入到生成目录里面
+	cd xxx
+	npm install
+4.npm run dev
+
+vue2.0的变化
+1.在每个组件模板，不再支持片段代码 
+	组件中模板：
+		之前：
+			<template>
+				<h3>我是组件</h3><strong>我是加粗</strong>
+			</template>
+
+		现在：必须有根元素包裹住所有代码
+			<template>
+				<div>
+				<h3>我是组件</h3><strong>我是加粗</strong>
+				</div>
+			</template>
+
+2.关于组件定义
+	vue.extend   这种方式2.0里也可以用
+	vue.component(组件名称，{  在2.0继续能使用
+		data(){}
+		methods:{}
+		template:
+})
+	2.0推出了一个组件，简洁定义方式：
+		var Home={
+			template:''    ----->相当于vue.extend(),但也要用vue.component来注册组件的
+}
+3.生命周期
+	之前：
+		init 组件实例刚被创建，实例还没被创建
+		created  实例已经被创建，但dom还没生成
+		beforeCompile 模板编译之前
+		compiled  最后被编译完了
+		ready
+		beforeDestory  被销毁之前
+		destroyed  销毁完了
+
+	现在：
+		beforCreate 组件实例刚刚被创建，属性都没有
+		created     实例已经创建完成，属性已经绑定
+		beforeMount 模板编译之前
+		mounted     模板编译之后，代替之前ready
+		beforUpdate 组件更新之前
+		updated     组件更新之后
+		beforeDestory 组件销毁前
+		destoryed    组件销毁之后
+
+3.循环
+	2.0里面默认就可以添加重复数据
+	原生：arr.forEach（function（item，index）{
+}）
+	2.0去掉了隐式变量$index  $key
+	之前：
+		v-for='(index,val) in array'
+	现在：
+		v-for='(val,index) in array'  ----->更接近原生循环的规则
+
+4.tracl-by=‘id’----->1.0里面实现添加重复数据
+	变成：
+		<li v-for='(val,inde) in lisst' :key='index'>
+
+5.自定义键盘指令
+	之前：vue.directive（'on'）.keyCodes.f1=17
+	现在：vue.config.keyCodes.ctrl=17
+
+6.过滤器
+	之前：
+		系统就自带很多过滤
+		{{msg | currency}}
+		{{msg | json}}....
+	到了2.0内置过滤器，全部删除了
+
+
+	自定义过滤器还有
+		但是自定义过滤器传参数
+			之前：{{msg|toDouglas '12' '5'}}
+			现在：{{msg|toDouglas （'12','5'）}}
+
+7.组件通信：
+	vm.$emit()
+	vm.$on()
+
+	父组件和子组件：
+
+	子组件想拿到父组件数据：
+		通过 props
+	
+	之前1.0子组件可以更改父组件信息，可以同步 sync属性
+	现在2.0不允许直接给父级的数据，做赋值操作
+
+	如果想更改：
+		a.父组件每次传一个对象个子组件，对象之间的引用
+		b.只是不报错，mounted中转
+-------------------------------------------------------------
+可以单一事件管理组件通信：   （vuex的原理）
+	var Event=new Vue()
+	Event.$emit(事件名称，数据）
+	Event.$on(事件名称，function(data){
+		//data
+	}.bind(this))
+----------------------------------
+debounce 事件延迟执行在2.0也废弃了
+	若要延迟执行，用lodash里面的一个方法$debounce(fn,时间）
+			
+
+8.vue动画
+	transition 之前是属性 -----》<p transition='fade'></p>
+		1.0需要运动要设置.fade-transition{}
+				 .fade-enter{}
+				 .fade-leave{}
+--------------------------------------------------------------------
+	到2.0以后transition是组件
+		<transition name='fade'>
+			运动的东西（元素，属性，路由...）
+		</transition>
+
+	class的定义：
+		.fade-tenter{}  //初始状态
+		.fade-enter-active{}  //变化成怎么样 -->当元素出来（显示）
+		.fade-leave{}
+		.fade-leave-active{}  //变化成怎样  -->当元素离开（消失）
+
+如何animate.css配合用？
+	<transition enter-active-class='animated zoomInLeft' leave-active-class=animated zoomOutRight'>
+		<p v-show='show'></p>
+	</transition>
+
+多个元素运动：
+	<transition-group enter-active-class='animated zoomInLeft' leave-active-class=animated zoomOutRight'>
+		<p v-show='show' :key='1'></p>
+		<p v-show='show' :key='2'></p>
+	</transition>
+------------------------------------------------------------
+9.vue2.0路由：cnpm install vue-router --save
+基本使用：
+	1.布局：(在html中)
+		<router-link to='/home'>主页</router-link>
+		<router-view></router-view>
+	2.路由具体写法：（在script中）
+		//组件
+		var Home={
+			template:'<h3>我是主页</h3>
+			};
+		var News={
+			template:'<h3>我是新闻</h3>
+			};
+
+		//配置路由
+		const routes=[
+			{path:'/home',component:Home},
+			{path:'/news',component:News},
+			{path:'*',redirect:'/home'},  ---->重定向，之前的router.redirect已经报废了
+			]
+		//生成路由实例
+		const route=new VueRouter({
+			routes
+		})
+		//最后挂到vue上
+		new Vue（{
+			router，
+			el:'#box'
+		}）
+---------------------------------------------------------------
+路由嵌套：/user/username
+
+		const routes=[
+			{path:'/home',component:Home},
+			{path:'/user',
+			 component:User
+			 children:[  //核心子路由嵌套，不用subrouter
+				{path:'username',component:UserName}
+				]},
+			{path:'*',redirect:'/home'},  ---->重定向，之前的router.redirect已经报废了
+			]
+---------------------------------------------------
+路由实例方法：
+		router.push({path:'home'})  //直接添加一个路由，表现切换路由，本质是往历史记录里面添加一个
+
+		router.replace({path:'home'}) //替换路由，不会往历史记录里面添加
+	

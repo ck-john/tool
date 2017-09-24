@@ -1,0 +1,59 @@
+cookie:短暂存储数据到内存里，例如网页的搜索过的内容，网页右下角产品广告就是用cookie来做，把你搜索过的内容推送相应的产品广告。
+
+cookie相当于客户商店会员卡，客户是客户端，商店是服务器，会员卡是cookie，由服务器发个客户的。
+
+cookie保存的内容一般在会话结束而清除，默认的过期时间是seesion（会话内）,可以添加保存时间至几天后才清除。
+设置过期时间：通过expires=time;的格式来进行指定, 设置了之后只要没有超过过期时间，那么数据将一直都在
+设置cookie数据和过期的时间：document.cookie = "name=zhangsan; expires="+date+";";
+
+cookie只能同域访问数据，不能跨域访问
+
+使用cookie来进行数据存储的大小有限制，4KB
+每个网页中存储cookie的个数（最多50）和每个网站中存储cookie的个数都有限制（200）
+
+cookie的添加：document.cookie="name=zhangsan";cookie保存的值是字符串
+
+cookie的查询获取：封装getCookie需要把字符串切割为数组split（“; ”）用分号空格来切割，再遍历数组把每个元素拿出来，再切割split（“=”）
+
+cookie删除只要设置他的时间过期就可以了，设置时间为-1即过期
+addCookie(key,"",-1)
+
+cookie解决刷新问题：需要刷新时仍保存当前值
+
+页面刷新用得最多和最普遍的是hash，用hash保存数据，去除hash值中的#可以用结串substring（1）
+substring() 方法用于提取字符串中介于两个指定下标之间的字符。
+
+var str="Hello world!"
+document.write(str.substring(3))
+输出：lo world!
+
+localStorage存储
+（1）简单对比：保存在本地 + 没有时间限制
+（2）大小比较：4K - 5M - 20M
+（3）使用方式和sessionStorage相同
+
+增：window.localStorage.setItem("name",oInput.value);
+查：window.localStorage.getItem("name")
+改：window.localStorage.setItem("name",oInput.value);
+删：window.localStorage.removeItem("name")
+清空：window.localStorage.clear();
+
+应用缓存：没有网络也可以访问得到，h5推出，主要应用于在线看小说，有网的时候把数据加载完，没网也可以看，但ie不支持
+
+1）在页面中加载资源文件（图片），调试工具窗口选择（none network）表示网络无法连接
+    2）新创建xx.appcache文件，在该文件配置要缓存的内容
+    3）设置html页面中的manifest属性为配置文件路径
+
+CACHE MANIFEST
+
+        CACHE:
+        # 需要缓存的列表
+        0.jpg
+
+        NETWORK:
+        # 不需要缓存的
+        1.jpg
+
+        FALLBACK:
+        # 访问缓存失败后，备用访问的资源，第一个是访问源，第二个是替换文件*.html /offline.html
+        2.jpg /3.jpg
